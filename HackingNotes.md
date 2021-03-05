@@ -38,6 +38,10 @@
 ### Enumerate Wordpress Site
 * Get users: `wpscan --url $URL -e vp,u`
 
+### Web Site Scan
+
+* nikto: `nikto -h $URL`
+
 
 ## Brute Forcing
 
