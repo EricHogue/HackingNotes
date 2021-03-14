@@ -10,3 +10,4 @@ It's a collection of commands, tips and trick that I use as reminders when tryin
 * [Windows Exploitation](Windows.md)
 * [Steganography](Steganography.md)
 * [Buffer Overflow](BufferOverflow.md)
+* [Reversing And Malware Analysis](ReversingAndMalwareAnalysis.md)
