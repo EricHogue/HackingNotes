@@ -59,9 +59,3 @@ def splitChars(charsString):
 if __name__ == "__main__":
     main()
 
-
-# Get restrictions
-# Get shellcode
-# Find invalid chars
-
-
