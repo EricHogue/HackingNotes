@@ -37,6 +37,7 @@
 
 ### Enumerate Wordpress Site
 * Get users: `wpscan --url http://target/ -e vp,u`
+* Get Plugins `$ nmap -sV --script http-wordpress-enum --script-args search-limit=10000 -p 80 target `
 
 ### Web Site Scan
 

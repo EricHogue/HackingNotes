@@ -49,6 +49,9 @@ CTRL-z
 stty raw -echo;fg
 ```
 
+https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/
+
+
 ## sudo
 * List sudo Permisions
     * `sudo -l`
