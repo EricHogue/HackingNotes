@@ -17,27 +17,29 @@
 
 ### Enumerate Web Site Folders
 
-* `gobuster dir -e -u http://target/ -t30 -w /usr/share/dirb/wordlists/common.txt  | tee gobuster.txt`
-* `gobuster dir -e -u http://target/ -t30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt  | tee gobuster2.txt`
-* `wfuzz -c -z file,/usr/share/wordlists/dirb/big.txt --hw 54 -t10 "target/FUZZ"`
+* `gobuster dir -e -u http://target.thm/ -t30 -w /usr/share/dirb/wordlists/common.txt  | tee gobuster.txt`
+* `gobuster dir -e -u http://target.thm/ -t30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt  | tee gobuster2.txt`
+* `gobuster dir -e -u http://target.thm/ -t30 -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt | tee gobuster3.txt`
+* `wfuzz -c -z file,/usr/share/wordlists/dirb/big.txt --hw 54 -t10 "target.thm/FUZZ"`
 
 ### Find SubDomains
 * `wfuzz -c -w /usr/share/amass/wordlists/subdomains-top1mil-5000.txt -t30 --hw 290 -H "Host:FUZZ.somedomain.com" "http://somedomain.com/"`
 
 ### Enumerate SMB
-* `enum4linux -a IP | tee enum4linux.txt`
-* `nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse -oN nmapSamba.txt IP`
-* `smbmap -H IP`
-* `smbclient -U guest \\\\10.10.166.254\\IPC$`
+* `enum4linux -a target | tee enum4linux.txt`
+* `nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse -oN nmapSamba.txt target`
+* `smbmap -H target`
+* `smbclient -U guest \\\\target\\IPC$`
 
 ### Enumerate Mounts
-* `nmap -p PORT --script=nfs-ls,nfs-statfs,nfs-showmount -oN nmapRpc.txt IP`
+* `nmap -p PORT --script=nfs-ls,nfs-statfs,nfs-showmount -oN nmapRpc.txt target`
     * To mount: `sudo mount -t nfs target:$SOURCE_PATH $DESTINATION_PATH`
 * `showmount -e target`
 
 ### Enumerate Wordpress Site
 * Get users: `wpscan --url http://target/ -e vp,u`
 * Get Plugins `$ nmap -sV --script http-wordpress-enum --script-args search-limit=10000 -p 80 target `
+	* https://nmap.org/nsedoc/scripts/http-wordpress-enum.html
 
 ### Web Site Scan
 

