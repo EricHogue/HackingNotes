@@ -90,3 +90,12 @@ On the sending machine, open the connection and send the file.
 ```bash
 nc -w 3 10.13.3.36 1234 < file
 ```
+
+## Scan for Open Ports With nc
+```bash
+import os
+
+for i in range(65535):
+        command = f"nc -v -z -n -w 1 172.17.0.1 {i}"
+        os.system(command)
+```
