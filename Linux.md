@@ -63,6 +63,19 @@ CTRL-z
 stty raw -echo;fg
 ```
 
+If the number of rows and column don't match. 
+
+On your machine:
+```bash
+ stty -a
+speed 38400 baud; rows 53; columns 211; line = 0;
+```
+
+Then in the reverse shell:
+```bash
+stty rows 53 cols 211
+```
+
 https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/
 
 
@@ -99,3 +112,11 @@ for i in range(65535):
         command = f"nc -v -z -n -w 1 172.17.0.1 {i}"
         os.system(command)
 ```
+
+## Interesting LFI Files
+
+* /etc/passwd - Get the users on the system
+* /proc/self/ - Information of the current process, replace self with PID to get other processes
+    * /proc/self/cmdline - Command line
+    * /proc/self/environ - Environment variables
+    * /proc/self/stat - Information of the process, PID, Parrent PID
